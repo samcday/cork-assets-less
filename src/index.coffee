@@ -8,17 +8,11 @@ regex =
 class AnnexHandler
 	constructor: (@annex) ->
 	init: (files, cb) ->
-		@files = files
+		@annex.addFileHandler regex.lessFile, @processLess
 		cb()
-	processFile: (file, cb) ->
-		self = @
-		if @annex.config.files 
-			return cb() unless (@annex.config.files.indexOf file) > -1
-			self._parseAndWrite file, cb
-		else if matches = regex.lessFile.exec file
-			self._parseAndWrite file, cb
-		else
-			cb()
+	processLess: (file, cb) =>
+		return cb() if @annex.config.files and (@annex.config.files.indexOf file) is -1
+		@_parseAndWrite file, cb
 	_parseAndWrite: (file, cb) ->
 		self = @
 		dir = path.dirname file
